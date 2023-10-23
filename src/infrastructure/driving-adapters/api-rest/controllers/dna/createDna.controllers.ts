@@ -6,8 +6,7 @@ import { DynamoDBDnaRepository } from '../../../../../infrastructure/implementat
 
 export const createDna = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const {
-    dna,
-    result
+    dna
   } = req.body
 
   const dynamoDBDnaRepo = new DynamoDBDnaRepository()
@@ -16,12 +15,12 @@ export const createDna = async (req: Request, res: Response, next: NextFunction)
   const dnaToCreate: Dna = {
     id: uuidv4(),
     dna,
-    result
+    result: ''
   }
 
   try {
-    await dnaCreatorUseCase.run(dnaToCreate)
-    res.status(200).send()
+    const dataCreated = await dnaCreatorUseCase.run(dnaToCreate)
+    res.status(parseInt(dataCreated.result)).send()
   } catch (e) {
     next(e)
   }
